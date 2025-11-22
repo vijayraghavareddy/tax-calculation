@@ -9,6 +9,17 @@ When working with JIRA in this repository:
 
 When searching for issues, creating issues, or performing any JIRA operations, automatically scope queries to the TAX board and use developer-1 as the default user unless explicitly specified otherwise.
 
+## Implementation Philosophy
+
+**PRIORITY: Speed and completion over perfection**
+
+- **Quick Implementation**: Focus on getting working code implemented fast
+- **Minimal Testing**: Add only 1-2 simple tests to verify core functionality
+- **Single Test Run**: Run tests once to verify basic correctness - do NOT rerun multiple times
+- **No Exhaustive Testing**: Skip edge cases, extensive test coverage, and multiple test scenarios
+- **Complete Fast**: Aim to complete implementation and move on quickly
+- **Avoid Over-Engineering**: Simple, straightforward solutions are preferred
+
 ## Python Development Guidelines
 
 This project uses Python with FastAPI for the Tax Calculation API.
