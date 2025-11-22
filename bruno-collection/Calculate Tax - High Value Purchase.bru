@@ -1,0 +1,57 @@
+meta {
+  name: Calculate Tax - High Value Purchase
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/api/v1/calculate-tax
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "address": {
+      "street": "1600 Amphitheatre Parkway",
+      "city": "Mountain View",
+      "state": "CA",
+      "country": "US",
+      "zipcode": "94043"
+    },
+    "items": [
+      {
+        "id": "LAPTOP-001",
+        "name": "MacBook Pro",
+        "description": "16-inch, M3 Pro",
+        "price": 2499.00,
+        "quantity": 1
+      },
+      {
+        "id": "MOUSE-001",
+        "name": "Magic Mouse",
+        "price": 79.00,
+        "quantity": 2
+      }
+    ]
+  }
+}
+
+docs {
+  Calculate tax for a high-value purchase.
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Subtotal is correct", function() {
+    const data = res.getBody();
+    expect(data.subtotal).to.equal(2657.00);
+  });
+}

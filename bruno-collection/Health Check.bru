@@ -1,0 +1,31 @@
+meta {
+  name: Health Check
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/api/v1/health
+  body: none
+  auth: none
+}
+
+docs {
+  Check if the API service is running and healthy.
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response has status field", function() {
+    const data = res.getBody();
+    expect(data.status).to.equal("healthy");
+  });
+  
+  test("Response has service field", function() {
+    const data = res.getBody();
+    expect(data.service).to.equal("tax-calculation-api");
+  });
+}

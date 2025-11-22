@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Tax Calculation API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

@@ -1,0 +1,49 @@
+meta {
+  name: Calculate Tax - UK with Postal Code
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/api/v1/calculate-tax
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "address": {
+      "street": "221B Baker Street",
+      "city": "London",
+      "country": "UK",
+      "postal_code": "NW1 6XE"
+    },
+    "items": [
+      {
+        "id": "BOOK-001",
+        "name": "Sherlock Holmes Complete Works",
+        "price": 29.99,
+        "quantity": 1
+      }
+    ]
+  }
+}
+
+docs {
+  Calculate tax for a UK address using postal_code field instead of zipcode.
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Tax jurisdiction is UK", function() {
+    const data = res.getBody();
+    expect(data.tax_jurisdiction).to.include("UK");
+  });
+}

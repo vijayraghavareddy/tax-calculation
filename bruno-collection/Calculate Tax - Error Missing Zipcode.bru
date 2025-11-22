@@ -1,0 +1,49 @@
+meta {
+  name: Calculate Tax - Error: Missing Zipcode
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{base_url}}/api/v1/calculate-tax
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "address": {
+      "street": "123 Main St",
+      "city": "New York",
+      "state": "NY",
+      "country": "US"
+    },
+    "items": [
+      {
+        "id": "item1",
+        "name": "Product A",
+        "price": 100.00,
+        "quantity": 1
+      }
+    ]
+  }
+}
+
+docs {
+  Test error handling when zipcode is missing.
+}
+
+tests {
+  test("Status code is 400", function() {
+    expect(res.getStatus()).to.equal(400);
+  });
+  
+  test("Error message mentions zipcode", function() {
+    const data = res.getBody();
+    expect(data.message).to.include("zipcode");
+  });
+}

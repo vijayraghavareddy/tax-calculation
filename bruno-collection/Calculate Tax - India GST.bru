@@ -1,0 +1,56 @@
+meta {
+  name: Calculate Tax - India GST
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{base_url}}/api/v1/calculate-tax
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "address": {
+      "street": "MG Road",
+      "city": "Bangalore",
+      "state": "Karnataka",
+      "country": "IN",
+      "zipcode": "560001"
+    },
+    "items": [
+      {
+        "id": "MOBILE-001",
+        "name": "Smartphone",
+        "price": 25000.00,
+        "quantity": 1
+      },
+      {
+        "id": "CASE-001",
+        "name": "Phone Case",
+        "price": 500.00,
+        "quantity": 1
+      }
+    ]
+  }
+}
+
+docs {
+  Calculate GST for an Indian address.
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Tax jurisdiction is India", function() {
+    const data = res.getBody();
+    expect(data.tax_jurisdiction).to.include("IN");
+  });
+}

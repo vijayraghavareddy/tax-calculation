@@ -1,0 +1,70 @@
+meta {
+  name: Calculate Tax - US Purchase
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/api/v1/calculate-tax
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "address": {
+      "street": "123 Main St",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "zipcode": "10001"
+    },
+    "items": [
+      {
+        "id": "item1",
+        "name": "Product A",
+        "description": "A great product",
+        "price": 100.00,
+        "quantity": 2
+      }
+    ]
+  }
+}
+
+docs {
+  Calculate tax for a US address with a single item.
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response has required fields", function() {
+    const data = res.getBody();
+    expect(data).to.have.property('address');
+    expect(data).to.have.property('items');
+    expect(data).to.have.property('subtotal');
+    expect(data).to.have.property('total_tax');
+    expect(data).to.have.property('grand_total');
+  });
+  
+  test("Subtotal is correct", function() {
+    const data = res.getBody();
+    expect(data.subtotal).to.equal(200.00);
+  });
+  
+  test("Tax is calculated", function() {
+    const data = res.getBody();
+    expect(data.total_tax).to.be.above(0);
+  });
+  
+  test("Grand total equals subtotal plus tax", function() {
+    const data = res.getBody();
+    expect(data.grand_total).to.equal(data.subtotal + data.total_tax);
+  });
+}
