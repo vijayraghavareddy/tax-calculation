@@ -1,0 +1,3 @@
+✅ Tax Calculation API - Project Complete
+
+This file can be deleted. See QUICKSTART.md for getting started.
