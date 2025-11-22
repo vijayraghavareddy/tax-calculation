@@ -1,27 +1,39 @@
-# .gitignore for Go Tax Calculation API
+# .gitignore for Python Tax Calculation API
 
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
 *.so
-*.dylib
-tax-api
-tax-calculation
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Test binary, built with `go test -c`
-*.test
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
 
-# Output of the go coverage tool
-*.out
-coverage.html
-coverage.txt
-
-# Go workspace file
-go.work
-
-# Dependency directories
-vendor/
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
 
 # IDE specific files
 .vscode/
@@ -45,3 +57,13 @@ logs/
 # Temporary files
 tmp/
 temp/
+
+# Old Go files (kept for reference)
+go.mod
+go.sum
+*.go
+tax-api
+tax-calculation
+handlers/
+models/
+services/

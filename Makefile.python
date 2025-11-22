@@ -1,0 +1,34 @@
+.PHONY: help install run test clean docker-build docker-run
+
+help:
+	@echo "Available commands:"
+	@echo "  make install       - Install Python dependencies"
+	@echo "  make run          - Run the application"
+	@echo "  make test         - Run tests"
+	@echo "  make clean        - Clean up generated files"
+	@echo "  make docker-build - Build Docker image"
+	@echo "  make docker-run   - Run Docker container"
+
+install:
+	pip install -r requirements.txt
+
+run:
+	python main.py
+
+test:
+	pytest -v
+
+clean:
+	rm -rf __pycache__
+	rm -rf .pytest_cache
+	rm -rf *.pyc
+	rm -rf .coverage
+	rm -rf htmlcov
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type f -name "*.pyc" -delete
+
+docker-build:
+	docker build -f Dockerfile.python -t tax-calculation-api:python .
+
+docker-run:
+	docker run -p 8080:8080 tax-calculation-api:python

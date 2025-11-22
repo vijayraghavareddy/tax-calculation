@@ -9,20 +9,88 @@ When working with JIRA in this repository:
 
 When searching for issues, creating issues, or performing any JIRA operations, automatically scope queries to the TAX board and use developer-1 as the default user unless explicitly specified otherwise.
 
-## Go Development Guidelines
+## Python Development Guidelines
 
-When working with Go code in this repository:
+This project uses Python with FastAPI for the Tax Calculation API.
 
-- **Error Handling**: Always check and handle errors explicitly. Never ignore returned errors.
-- **Testing**: Write table-driven tests using subtests (`t.Run()`) for comprehensive test coverage.
-- **Formatting**: Use `gofmt` or `goimports` for consistent code formatting.
-- **Naming Conventions**: 
-  - Use camelCase for unexported names
-  - Use PascalCase for exported names
-  - Keep names short but descriptive
-- **Project Structure**: 
-  - Place handlers in `handlers/` package
-  - Place business logic in `services/` package
-  - Place data models in `models/` package
-- **API Design**: Follow RESTful conventions and use proper HTTP status codes
-- **Documentation**: Add comments for all exported functions, types, and constants
+### Code Style & Formatting
+- **Formatting**: Use `black` for code formatting (line length: 88)
+- **Import Sorting**: Use `isort` for consistent import ordering
+- **Linting**: Follow `pylint` and `flake8` recommendations
+- **Type Hints**: Always use type hints for function parameters and return values
+- **Docstrings**: Use Google-style docstrings for all functions, classes, and modules
+
+### Project Structure
+- **Root Level Files**: 
+  - `main.py` - FastAPI application entry point
+  - `models.py` - Pydantic data models
+  - `handlers.py` - API route handlers
+  - `tax_service.py` - Business logic
+- **Tests**: Test files prefixed with `test_` (e.g., `test_tax_service.py`)
+- **Static Files**: Web UI files in `static/` directory
+
+### Error Handling
+- **Validation**: Use Pydantic models for automatic request validation
+- **Exceptions**: Raise `ValueError` for business logic errors
+- **HTTP Exceptions**: Use `HTTPException` from FastAPI for API errors
+- **Error Messages**: Provide clear, descriptive error messages
+
+### Testing
+- **Framework**: Use `pytest` for all tests
+- **Fixtures**: Use pytest fixtures for reusable test setup
+- **Coverage**: Maintain high test coverage (aim for >90%)
+- **Test Organization**: 
+  - Unit tests for service layer (`test_tax_service.py`)
+  - Integration tests for API endpoints (`test_handlers.py`)
+- **Assertions**: Use descriptive assertion messages
+
+### API Design
+- **RESTful**: Follow RESTful conventions
+- **Status Codes**: Use appropriate HTTP status codes (200, 400, 404, 422, 500)
+- **Response Models**: Define Pydantic response models for all endpoints
+- **Documentation**: FastAPI auto-generates docs at `/docs` and `/redoc`
+- **CORS**: CORS middleware configured for cross-origin requests
+
+### Naming Conventions
+- **Variables/Functions**: Use `snake_case` (e.g., `calculate_tax`, `tax_rate`)
+- **Classes**: Use `PascalCase` (e.g., `TaxService`, `TaxRequest`)
+- **Constants**: Use `UPPER_SNAKE_CASE` (e.g., `DEFAULT_TAX_RATE`)
+- **Private Methods**: Prefix with single underscore (e.g., `_validate_request`)
+
+### Dependencies
+- **Core**: FastAPI, uvicorn, pydantic
+- **Testing**: pytest, pytest-cov, httpx
+- **Management**: Keep `requirements.txt` updated
+
+### Best Practices
+- **Async**: Use async/await for I/O operations when beneficial
+- **Validation**: Let Pydantic handle data validation
+- **DRY**: Don't repeat yourself - extract common logic
+- **Single Responsibility**: Each function/class should have one purpose
+- **Documentation**: Keep README.python.md and docstrings up to date
+
+### Running the Application
+```bash
+# Development
+python main.py
+
+# Production (with uvicorn)
+uvicorn main:app --host 0.0.0.0 --port 8080 --workers 4
+
+# Testing
+pytest -v
+pytest --cov=. --cov-report=html
+```
+
+---
+
+## Legacy Go Code (Archived)
+
+The original Go implementation is preserved in:
+- `main.go`
+- `handlers/` directory
+- `models/` directory  
+- `services/` directory
+- `go.mod`
+
+These files are kept for reference but are no longer actively maintained.
