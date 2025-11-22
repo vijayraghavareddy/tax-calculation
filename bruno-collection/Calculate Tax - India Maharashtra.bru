@@ -1,0 +1,59 @@
+meta {
+  name: Calculate Tax - India Maharashtra
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{base_url}}/calculate-tax
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "address": {
+      "street": "MG Road",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "country": "India",
+      "postal_code": "400001"
+    },
+    "items": [
+      {
+        "id": "item1",
+        "name": "Electronics",
+        "description": "Laptop Computer",
+        "price": 50000.00,
+        "quantity": 1
+      }
+    ]
+  }
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Response has tax calculation", function() {
+    const data = res.getBody();
+    expect(data).to.have.property('subtotal');
+    expect(data).to.have.property('total_tax');
+    expect(data).to.have.property('grand_total');
+    expect(data).to.have.property('tax_jurisdiction');
+  });
+  
+  test("Tax jurisdiction is India GST", function() {
+    const data = res.getBody();
+    expect(data.tax_jurisdiction).to.include('India');
+    expect(data.tax_jurisdiction).to.include('GST');
+  });
+  
+  test("GST calculation is correct (18%)", function() {
+    const data = res.getBody();
+    expect(data.subtotal).to.equal(50000.00);
+    expect(data.total_tax).to.equal(9000.00); // 18% GST
+    expect(data.grand_total).to.equal(59000.00);
+  });
+}

@@ -1,0 +1,60 @@
+meta {
+  name: Calculate Tax - India Delhi
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{base_url}}/calculate-tax
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "address": {
+      "street": "Connaught Place",
+      "city": "New Delhi",
+      "state": "DL",
+      "country": "India",
+      "postal_code": "110001"
+    },
+    "items": [
+      {
+        "id": "item1",
+        "name": "Clothing",
+        "price": 2000.00,
+        "quantity": 5
+      },
+      {
+        "id": "item2",
+        "name": "Accessories",
+        "price": 500.00,
+        "quantity": 3
+      }
+    ]
+  }
+}
+
+tests {
+  test("Status code is 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("Multiple items GST calculation", function() {
+    const data = res.getBody();
+    expect(data.subtotal).to.equal(11500.00); // (2000*5) + (500*3)
+    expect(data.total_tax).to.equal(2070.00); // 18% GST on 11500
+    expect(data.grand_total).to.equal(13570.00);
+  });
+  
+  test("All items have tax calculated", function() {
+    const data = res.getBody();
+    expect(data.items).to.have.lengthOf(2);
+    data.items.forEach(item => {
+      expect(item).to.have.property('tax_rate');
+      expect(item).to.have.property('tax_amount');
+      expect(item.tax_rate).to.equal(18); // 18% GST
+    });
+  });
+}

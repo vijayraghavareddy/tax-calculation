@@ -93,9 +93,23 @@ func (s *TaxService) validateRequest(req *models.TaxRequest) error {
 	return nil
 }
 
-// getTaxRateForLocation returns a tax rate based on the US state
-// Rates are approximate and based on combined state and average local rates
+// getTaxRateForLocation returns a tax rate based on location
+// Routes to appropriate country-specific tax calculation
 func (s *TaxService) getTaxRateForLocation(address *models.Address) float64 {
+	country := strings.ToUpper(address.Country)
+	
+	// Route to country-specific tax calculation
+	if country == "IN" || country == "INDIA" {
+		return s.getIndianStateTaxRate(address)
+	}
+	
+	// Default to US tax calculation
+	return s.getUSTaxRate(address)
+}
+
+// getUSTaxRate returns a tax rate based on the US state
+// Rates are approximate and based on combined state and average local rates
+func (s *TaxService) getUSTaxRate(address *models.Address) float64 {
 	state := strings.ToUpper(address.State)
 
 	// US state sales tax rates (approximate combined rates)
@@ -209,8 +223,78 @@ func (s *TaxService) getTaxRateForLocation(address *models.Address) float64 {
 	return baseRate
 }
 
+// getIndianStateTaxRate returns GST rate for Indian states
+// India uses a centralized GST system with standard rates: 5%, 12%, 18%, 28%
+// Using 18% as default (most common rate for goods and services)
+func (s *TaxService) getIndianStateTaxRate(address *models.Address) float64 {
+	state := strings.ToUpper(address.State)
+
+	// Indian state GST rates (CGST + SGST = Total GST)
+	// Most goods/services fall under 18% GST (9% CGST + 9% SGST)
+	var gstRate float64
+	switch state {
+	case "MH", "MAHARASHTRA":
+		gstRate = 0.18 // 18% GST
+	case "KA", "KARNATAKA":
+		gstRate = 0.18 // 18% GST
+	case "TN", "TAMIL NADU", "TAMILNADU":
+		gstRate = 0.18 // 18% GST
+	case "DL", "DELHI":
+		gstRate = 0.18 // 18% GST
+	case "GJ", "GUJARAT":
+		gstRate = 0.18 // 18% GST
+	case "WB", "WEST BENGAL", "WESTBENGAL":
+		gstRate = 0.18 // 18% GST
+	case "RJ", "RAJASTHAN":
+		gstRate = 0.18 // 18% GST
+	case "UP", "UTTAR PRADESH", "UTTARPRADESH":
+		gstRate = 0.18 // 18% GST
+	case "MP", "MADHYA PRADESH", "MADHYAPRADESH":
+		gstRate = 0.18 // 18% GST
+	case "AP", "ANDHRA PRADESH", "ANDHRAPRADESH":
+		gstRate = 0.18 // 18% GST
+	case "TS", "TELANGANA":
+		gstRate = 0.18 // 18% GST
+	case "BR", "BIHAR":
+		gstRate = 0.18 // 18% GST
+	case "HR", "HARYANA":
+		gstRate = 0.18 // 18% GST
+	case "PB", "PUNJAB":
+		gstRate = 0.18 // 18% GST
+	case "KL", "KERALA":
+		gstRate = 0.18 // 18% GST
+	case "OR", "ODISHA", "ORISSA":
+		gstRate = 0.18 // 18% GST
+	case "JH", "JHARKHAND":
+		gstRate = 0.18 // 18% GST
+	case "AS", "ASSAM":
+		gstRate = 0.18 // 18% GST
+	case "CT", "CHHATTISGARH":
+		gstRate = 0.18 // 18% GST
+	case "UK", "UTTARAKHAND":
+		gstRate = 0.18 // 18% GST
+	case "HP", "HIMACHAL PRADESH", "HIMACHALPRADESH":
+		gstRate = 0.18 // 18% GST
+	case "JK", "JAMMU AND KASHMIR", "JAMMUANDKASHMIR":
+		gstRate = 0.18 // 18% GST
+	case "GA", "GOA":
+		gstRate = 0.18 // 18% GST
+	default:
+		// Default GST rate for unrecognized states
+		gstRate = 0.18
+	}
+
+	return gstRate
+}
+
 // getTaxJurisdiction returns the tax jurisdiction string
 func (s *TaxService) getTaxJurisdiction(address *models.Address) string {
+	country := strings.ToUpper(address.Country)
+	
+	if country == "IN" || country == "INDIA" {
+		return fmt.Sprintf("%s, India (GST)", address.State)
+	}
+	
 	return fmt.Sprintf("%s, USA", address.State)
 }
 
