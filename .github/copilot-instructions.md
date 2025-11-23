@@ -20,6 +20,14 @@ When searching for issues, creating issues, or performing any JIRA operations, a
 - **Complete Fast**: Aim to complete implementation and move on quickly
 - **Avoid Over-Engineering**: Simple, straightforward solutions are preferred
 
+### Branch & Implementation Strategy
+
+- **Always Start Fresh**: Ignore any previous implementations of the feature
+- **New Branch**: Create a new branch with unique ID at the end (e.g., `TAX-123-feature-name-a1b2c3`)
+- **Clean Implementation**: Start implementation from scratch without referencing old code
+- **No Previous Mentions**: Do not mention or document previous implementation attempts
+- **Forward Only**: Focus on the current implementation, not what was done before
+
 ## Python Development Guidelines
 
 This project uses Python with FastAPI for the Tax Calculation API.
